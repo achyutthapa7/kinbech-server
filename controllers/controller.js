@@ -1,8 +1,25 @@
-import authentication from "../auth/auth.js";
 import sendOtp from "../helpers/sendOtp.js";
 import { userModel } from "../model/model.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import cron from "node-cron";
+
+//schedule verification code to be deleted
+cron.schedule("*/5 * * * *", async (req, res) => {
+  try {
+    const now = Date.now();
+    const result = await userModel.deleteMany({
+      isVerified: false,
+    });
+    if (result.deletedCount > 0) {
+      console.log(
+        `Deleted ${result.deletedCount} unverified users with expired verification codes.`
+      );
+    }
+  } catch (error) {
+    console.error(`Error while deleting unverified users: ${error.message}`);
+  }
+});
 
 //user registration
 export async function registration(req, res) {
@@ -28,7 +45,7 @@ export async function registration(req, res) {
     const verificationCode = Math.floor(
       Math.random() * 899999 + 100000
     ).toString();
-    const verificationCodeExpiry = Date.now() + 1 * 1000 * 60;
+    const verificationCodeExpiry = Date.now() + 5 * 1000 * 60;
     const title = "verify your email";
     const heading = "verify your email";
     const paragraph =
@@ -50,9 +67,10 @@ export async function registration(req, res) {
       verificationCode,
       verificationCodeExpiry,
     });
-    await newUser.save();
     res.cookie("emailAddress", emailAddress);
-    sendOtp(verificationCode, emailAddress, title, heading, paragraph);
+    await newUser.save();
+
+    // sendOtp(verificationCode, emailAddress, title, heading, paragraph);
     res.status(200).json(newUser);
   } catch (error) {
     console.log(`Error while registration: ${error.message}`);
@@ -65,39 +83,32 @@ export async function verification(req, res) {
     const { verificationCode } = req.body;
     const emailAddress = req.cookies.emailAddress;
     const user = await userModel.findOne({ emailAddress });
+
     if (!verificationCode && (user || !user))
       return res
         .status(403)
         .json({ message: "Please provide verification code" });
     if (!user)
       return res.status(404).json({ message: "You have to register first" });
+
     if (user.isVerified == true)
       return res.status(201).json({ message: "You are verified" });
-    else {
-      if (
-        Date.now() > user.verificationCodeExpiry &&
-        user.isVerified == false
-      ) {
-        await userModel.deleteOne();
-        res.cookie("emailAddress", "");
-        return res
-          .status(400)
-          .json({ message: "Verification Code is Expired" });
-      }
-    }
-
     if (verificationCode === user.verificationCode) {
-      await userModel.updateOne({
-        $set: {
-          isVerified: true,
-        },
-      });
+      await userModel.updateOne(
+        { emailAddress },
+        {
+          $set: {
+            isVerified: true,
+          },
+        }
+      );
+
       return res.status(200).json({ message: "Verification successful" });
     } else {
       return res.status(401).json({ message: "Verification code is wrong" });
     }
   } catch (error) {
-    console.log(`Error while login: ${error.message}`);
+    console.log(`Error while verifying: ${error.message}`);
   }
 }
 
@@ -123,13 +134,19 @@ export async function login(req, res) {
         { _id: userExistByUserName._id },
         process.env.SECRET_KEY
       );
-      res.cookie("token", token);
-      await userModel.updateOne({
-        $set: {
-          isLoggedIn: true,
-        },
+      res.cookie("token", token, {
+        maxAge: 3 * 24 * 60 * 60 * 1000,
+        httpOnly: true,
       });
-      return res.status(200).json({ message: "Login SuccessFul" });
+      await userModel.findOneAndUpdate(
+        {
+          userName,
+        },
+        {
+          $set: { isLoggedIn: true },
+        }
+      );
+      return res.status(200).json({ message: "Login SuccessFul", userName });
     } else return res.status(400).json({ message: "Password is incorrect" });
   } catch (error) {
     console.log(`Error while login: ${error.message}`);
@@ -139,15 +156,15 @@ export async function login(req, res) {
 //user logout
 export async function logout(req, res) {
   try {
+    const { emailAddress } = req.rootUser;
     res.cookie("token", "");
-    await userModel.updateOne({
-      $set: {
-        isLoggedIn: false,
-      },
-    });
+    await userModel.findOneAndUpdate(
+      { emailAddress },
+      { $set: { isLoggedIn: false } }
+    );
     return res.status(200).json({ message: "Logout successfully" });
-  } catch {
-    console.log(`Error while loggin out: ${error.message}`);
+  } catch (error) {
+    console.log(`Error while logging out: ${error.message}`);
   }
 }
 
@@ -171,7 +188,7 @@ export async function forgetpassword(req, res) {
     const heading = "Reset Your Password";
     const paragraph =
       "Please use the verification code below to reset your password:";
-    const verificationCodeExpiry = Date.now() + 1 * 1000 * 60;
+    const verificationCodeExpiry = Date.now() + 5 * 1000 * 60;
     const user = req.rootUser;
     if (!user) return res.status(404).json({ message: "Login First" });
     sendOtp(verificationCode, user.emailAddress, title, heading, paragraph);
@@ -240,5 +257,23 @@ export async function updateusername(req, res) {
     });
   } catch (error) {
     console.log(`Error while updating username: ${error.message}`);
+  }
+}
+
+//get emailaddress
+
+export async function isauthenticated(req, res) {
+  try {
+    return res.status(200).json({ user: req.rootUser });
+  } catch (error) {
+    console.log(`error: ${error.message}`);
+  }
+}
+
+export async function isverified(req, res) {
+  try {
+    return res.status(200).json({ user: req.rootUser });
+  } catch (error) {
+    console.log(`error: ${error.message}`);
   }
 }
