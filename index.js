@@ -1,18 +1,16 @@
-import "./conn/conn.js";
-import dotenv from "dotenv";
-dotenv.config();
 import express from "express";
-import cookieParser from "cookie-parser";
 import cors from "cors";
-
+import cookieParser from "cookie-parser";
+import dotenv from "dotenv";
 import { router } from "./routes/route.js";
+
+dotenv.config();
+
 const app = express();
 const port = process.env.PORT || 3000;
 
-//middlewares
-
-app.options(
-  "*",
+// Middleware setup
+app.use(
   cors({
     credentials: true,
     origin: ["http://localhost:5173", "https://kinbech.vercel.app"],
@@ -20,11 +18,18 @@ app.options(
     allowedHeaders: "Content-Type,Authorization",
   })
 );
-
 app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// Handle preflight requests
+app.options("*", cors());
+
+// Define routes
 app.use("/", router);
-app.listen(port, () => {
+
+// Start the server with increased timeout
+const server = app.listen(port, () => {
   console.log(`Server is live at: http://localhost:${port}`);
 });
+server.setTimeout(500000); // Set timeout to 500 seconds
