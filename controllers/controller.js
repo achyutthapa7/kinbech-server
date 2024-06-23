@@ -1,3 +1,4 @@
+import "../conn/conn.js";
 import sendOtp from "../helpers/sendOtp.js";
 import { userModel } from "../model/model.js";
 import bcrypt from "bcrypt";
