@@ -1,11 +1,11 @@
-import "./conn/conn.js";
+import "../conn/conn.js";
 import dotenv from "dotenv";
 dotenv.config();
 import express from "express";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 
-import { router } from "./routes/route.js";
+import { router } from "../routes/route.js";
 const app = express();
 const port = process.env.PORT || 3000;
 
@@ -28,3 +28,7 @@ app.use("/", router);
 app.listen(port, () => {
   console.log(`Server is live at: http://localhost:${port}`);
 });
+
+app.get("/", (req, res) => res.send("Express on Vercel"));
+
+export { app };

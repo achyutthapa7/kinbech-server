@@ -10,6 +10,7 @@ cron.schedule("*/5 * * * *", async (req, res) => {
     const now = Date.now();
     const result = await userModel.deleteMany({
       isVerified: false,
+      verificationCodeExpiry: { $lt: now },
     });
     if (result.deletedCount > 0) {
       console.log(
