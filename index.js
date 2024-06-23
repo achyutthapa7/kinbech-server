@@ -14,7 +14,12 @@ const port = process.env.PORT || 3000;
 app.use(
   cors({
     credentials: true,
-    origin: ["http://localhost:5173","https://kinbech.vercel.app"]
+    origin: [
+      "http://localhost:5173",
+      "https://kinbech.vercel.app",
+      "http://localhost:4173",
+    ],
+    methods: "GET,POST,PUT,DELETE,OPTIONS",
   })
 );
 app.use(cookieParser());
