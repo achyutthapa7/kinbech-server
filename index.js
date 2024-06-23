@@ -11,7 +11,8 @@ const port = process.env.PORT || 3000;
 
 //middlewares
 
-app.use(
+app.options(
+  "*",
   cors({
     credentials: true,
     origin: ["http://localhost:5173", "https://kinbech.vercel.app"],
@@ -19,7 +20,6 @@ app.use(
     allowedHeaders: "Content-Type,Authorization",
   })
 );
-app.options("*", cors());
 
 app.use(cookieParser());
 app.use(express.json());
