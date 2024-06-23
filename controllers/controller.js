@@ -35,8 +35,10 @@ export async function registration(req, res) {
       password,
       confirmPassword,
     } = req.body;
-    const userExistByEmailAddress = await userModel.findOne({ emailAddress });
-    const userExistByUserName = await userModel.findOne({ userName });
+    const userExistByEmailAddress = await userModel
+      .findOne({ emailAddress })
+      .lean();
+    const userExistByUserName = await userModel.findOne({ userName }).lean();
     if (userExistByEmailAddress)
       return res
         .status(401)
