@@ -1,15 +1,17 @@
-import "../conn/conn.js";
+import "./conn/conn.js";
 import dotenv from "dotenv";
 dotenv.config();
 import express from "express";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 
-import { router } from "../routes/route.js";
+import { router } from "./routes/route.js";
 const app = express();
 const port = process.env.PORT || 3000;
 
 //middlewares
+
+app.use("/image", express.static("./public/my-uploads"));
 
 app.use(
   cors({
@@ -30,4 +32,3 @@ app.listen(port, () => {
 });
 
 app.get("/", (req, res) => res.send("Express on Vercel"));
-

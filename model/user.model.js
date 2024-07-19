@@ -28,7 +28,6 @@ const userSchema = mongoose.Schema({
   },
   password: {
     type: String,
-    // select: false,
   },
   verificationCode: {
     type: String,
@@ -44,5 +43,12 @@ const userSchema = mongoose.Schema({
     type: Boolean,
     default: false,
   },
+
+  productDetails: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "product_details",
+    },
+  ],
 });
 export const userModel = mongoose.model("user_details", userSchema);

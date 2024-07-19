@@ -1,6 +1,6 @@
 import "../conn/conn.js";
 import sendOtp from "../helpers/sendOtp.js";
-import { userModel } from "../model/model.js";
+import { userModel } from "../model/user.model.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import cron from "node-cron";
@@ -150,7 +150,11 @@ export async function login(req, res) {
           $set: { isLoggedIn: true },
         }
       );
-      return res.status(200).json({ message: "Login SuccessFul", userName });
+      return res.status(200).json({
+        message: "Login SuccessFul",
+        user: userExistByUserName,
+        token,
+      });
     } else return res.status(400).json({ message: "Password is incorrect" });
   } catch (error) {
     console.log(`Error while login: ${error.message}`);
@@ -265,7 +269,6 @@ export async function updateusername(req, res) {
 }
 
 //get emailaddress
-
 export async function isauthenticated(req, res) {
   try {
     return res.status(200).json({ user: req.rootUser });
