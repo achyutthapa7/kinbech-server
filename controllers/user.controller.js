@@ -98,6 +98,7 @@ export async function verification(req, res) {
     if (user.isVerified == true)
       return res.status(201).json({ message: "You are verified" });
     if (verificationCode === user.verificationCode) {
+      res.cookie("emailAddress", "");
       await userModel.updateOne(
         { emailAddress },
         {

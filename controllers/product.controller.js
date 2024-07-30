@@ -59,7 +59,6 @@ export async function addproduct(req, res) {
 }
 
 //remove product
-
 export async function removeproduct(req, res) {
   const { id } = req.body;
   try {
@@ -85,7 +84,7 @@ export async function removeproduct(req, res) {
       return res.status(404).json({ message: "User not found" });
     }
 
-    res.json({ message: "Product removed successfully", user });
+    res.status(200).json({ message: "Product removed successfully", user });
   } catch (error) {
     console.log(`Error while removing product: ${error.message}`);
     res.status(500).send(`Error while removing product: ${error.message}`);
@@ -128,7 +127,7 @@ export async function updateProduct(req, res) {
       return res.status(404).json({ message: "User not found" });
     }
 
-    res.json({ message: "Product updated successfully", user });
+    res.status(200).json({ message: "Product updated successfully", user });
   } catch (error) {
     console.log(`Error while updating product: ${error.message}`);
     res.status(500).send(`Error while updating product: ${error.message}`);
@@ -147,7 +146,7 @@ export async function fetchProduct(req, res) {
     if (!products)
       return res.status(404).json({ message: "Product not found" });
 
-    res.json({ products });
+    res.status(200).json([products]);
   } catch (error) {
     console.log(`Error while fetching product: ${error.message}`);
     res.status(500).send(`Error while fetching product: ${error.message}`);
@@ -164,7 +163,7 @@ export async function fetchAllProduct(req, res) {
     if (!productsFromAllUser)
       return res.status(404).json({ message: "Product not found" });
 
-    res.json({ productsFromAllUser });
+    res.status(200).json([productsFromAllUser]);
   } catch (error) {
     console.log(`Error while fetching product: ${error.message}`);
     res.status(500).send(`Error while fetching product: ${error.message}`);

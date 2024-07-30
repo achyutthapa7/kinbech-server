@@ -23,6 +23,7 @@ import {
   removeproduct,
   updateProduct,
 } from "../controllers/product.controller.js";
+import { checkout } from "../controllers/checkout.controller.js";
 router.post("/registration", registration);
 router.post("/login", login);
 router.post("/verification", verification);
@@ -48,9 +49,15 @@ const upload = multer({ storage: storage });
 router.post("/addimage", upload.array("image", 5), addimage);
 router.post("/addproduct", authentication, addproduct);
 router.post("/removeproduct", authentication, removeproduct);
-router.put("/updateproduct", authentication, updateProduct);
+router.put(
+  "/updateproduct",
+  authentication,
+  upload.array("image", 5),
+  updateProduct
+);
 router.get("/fetchproduct", authentication, fetchProduct);
 router.get("/fetchAllProduct", authentication, fetchAllProduct);
 
+router.post("/checkout", authentication, checkout);
 
 export { router };
