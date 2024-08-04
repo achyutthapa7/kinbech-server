@@ -73,8 +73,9 @@ export async function registration(req, res) {
     });
     res.cookie("emailAddress", emailAddress, {
       secure: true,
+      sameSite: "None",
       httpOnly: true,
-      domain: "https://kinbech-client.vercel.app/",
+      domain: "https://kinbech-client.vercel.app",
       path: "/",
     });
     await newUser.save();
