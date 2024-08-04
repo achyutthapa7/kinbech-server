@@ -207,22 +207,6 @@ export async function forgetpassword(req, res) {
   }
 }
 
-//reset password
-export async function resetpassword(req, res) {
-  const { emailAddress } = req.rootUser;
-  const { password } = req.body;
-  const hashedPassword = await bcrypt.hash(password, 10);
-  try {
-    const user = await userModel.findOneAndUpdate(
-      { emailAddress },
-      { $set: { password: hashedPassword } }
-    );
-    res.status(200).json({ user });
-  } catch (error) {
-    console.log(`Error while resetting password: ${error.message}`);
-  }
-}
-
 //update password
 export async function updatepassword(req, res) {
   try {
@@ -258,11 +242,13 @@ export async function updateusername(req, res) {
       {
         emailAddress: req.rootUser.emailAddress,
       },
-      { $set: { userName: newUserName } }
+      { $set: { userName: newUserName } },
+      { new: true }
     );
+
     res.status(200).json({
       message: "Username updated successfully",
-      newUserName,
+      user,
     });
   } catch (error) {
     console.log(`Error while updating username: ${error.message}`);

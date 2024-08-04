@@ -6,7 +6,6 @@ import {
   dashboard,
   logout,
   updatepassword,
-  resetpassword,
   updateusername,
   forgetpassword,
   isauthenticated,
@@ -31,7 +30,6 @@ router.get("/dashboard", authentication, dashboard);
 router.get("/logout", authentication, logout);
 router.post("/forgetpassword", authentication, forgetpassword);
 router.put("/updatepassword", authentication, updatepassword);
-router.post("/resetpassword", authentication, resetpassword);
 router.put("/updateusername", authentication, updateusername);
 router.get("/isauthenticated", authentication, isauthenticated);
 router.get("/isverified", verificationauth, isverified);
