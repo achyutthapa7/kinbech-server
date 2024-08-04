@@ -116,7 +116,8 @@ export async function updateProduct(req, res) {
           itemCategory,
           itemImage,
         },
-      }
+      },
+      { new: true }
     );
     if (!updatedProduct)
       return res.status(404).json({ message: "Product not found" });
