@@ -74,7 +74,7 @@ export async function registration(req, res) {
     res.cookie("emailAddress", emailAddress);
     await newUser.save();
 
-    // sendOtp(verificationCode, emailAddress, title, heading, paragraph);
+    sendOtp(verificationCode, emailAddress, title, heading, paragraph);
     res.status(200).json(newUser);
   } catch (error) {
     console.log(`Error while registration: ${error.message}`);
