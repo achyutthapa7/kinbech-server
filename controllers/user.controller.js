@@ -71,7 +71,12 @@ export async function registration(req, res) {
       verificationCode,
       verificationCodeExpiry,
     });
-    res.cookie("emailAddress", emailAddress);
+    res.cookie("emailAddress", emailAddress, {
+      secure: true,
+      httpOnly: true,
+      domain: "https://kinbech-client.vercel.app/",
+      path: "/",
+    });
     await newUser.save();
 
     sendOtp(verificationCode, emailAddress, title, heading, paragraph);
