@@ -211,9 +211,28 @@ export async function forgetpassword(req, res) {
     const user = req.rootUser;
     if (!user) return res.status(404).json({ message: "Login First" });
     sendOtp(verificationCode, user.emailAddress, title, heading, paragraph);
-    res.status(200).json({ verificationCode, verificationCodeExpiry });
+    res.status(200).json({ verificationCode, verificationCodeExpiry,emailAddress:user.emailAddress });
   } catch (error) {
     console.log(`Error while sending otp: ${error.message}`);
+  }
+}
+
+//reset password with verification code
+export async function resetpassword(req, res) {
+  try {
+    const { newPassword, confirmNewPassword } = req.body;
+    if(newPassword!=confirmNewPassword){
+      return res.status(403).json({ message: "Passwords don't match, please try again" });
+    }
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    const user = await User.findOneAndUpdate(
+      { emailAddress: req.rootUser.emailAddress },
+      { $set: { password: hashedPassword } }
+    );
+    if (!user) return res.status(404).json({ message: "User Not Found" });
+    res.status(200).json({ message: "Password reset successfully" });
+  } catch (error) {
+    console.log(`Error while resetting password: ${error}`);
   }
 }
 

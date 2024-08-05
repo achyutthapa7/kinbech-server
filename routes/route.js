@@ -10,6 +10,7 @@ import {
   forgetpassword,
   isauthenticated,
   isverified,
+  resetpassword,
 } from "../controllers/user.controller.js";
 import { authentication, verificationauth } from "../auth/auth.js";
 const router = express.Router();
@@ -29,6 +30,7 @@ router.post("/verification", verification);
 router.get("/dashboard", authentication, dashboard);
 router.get("/logout", authentication, logout);
 router.post("/forgetpassword", authentication, forgetpassword);
+router.post("/resetpassword", authentication, resetpassword);
 router.put("/updatepassword", authentication, updatepassword);
 router.put("/updateusername", authentication, updateusername);
 router.get("/isauthenticated", authentication, isauthenticated);
