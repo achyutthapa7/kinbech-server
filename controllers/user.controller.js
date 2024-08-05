@@ -72,10 +72,11 @@ export async function registration(req, res) {
       verificationCodeExpiry,
     });
     res.cookie("emailAddress", emailAddress, {
-      secure: true,
+      secure: process.env.NODE_ENV === "production",
+      // secure: true,
       sameSite: "None",
       httpOnly: true,
-      domain: "https://kinbech-client.vercel.app",
+      // domain: "https://kinbech-client.vercel.app",
       path: "/",
     });
     await newUser.save();
