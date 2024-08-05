@@ -7,7 +7,7 @@ export async function addimage(req, res) {
     if (!req.files || req.files.length === 0) {
       return res.status(400).send("No files uploaded or invalid file types.");
     }
-    const baseUrl = `${req.protocol}://${req.get("host")}/image`;
+    const baseUrl = `https://kinbech-server.onrender.com/image`;
     const fileUrls = req.files.map((file) => `${baseUrl}/${file.filename}`);
     res.status(200).json({ message: "success", fileUrls });
   } catch (error) {
