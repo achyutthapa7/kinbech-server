@@ -16,7 +16,11 @@ app.use("/image", express.static("./public/my-uploads"));
 app.use(
   cors({
     credentials: true,
-    origin: ["http://localhost:5173", "https://kinbech-client.vercel.app"],
+    origin: [
+      "http://localhost:5173",
+      "https://kinbech-client.vercel.app",
+      "https://www.achyutthapa.com.np",
+    ],
     methods: "GET,POST,PUT,DELETE,OPTIONS",
     allowedHeaders: "Content-Type,Authorization",
   })
