@@ -22,8 +22,8 @@ export const checkout = async (req, res) => {
       payment_method_types: ["card"],
       line_items: lineItems,
       mode: "payment",
-      success_url: "http://localhost:5173/success",
-      cancel_url: "http://localhost:5173/cancel",
+      success_url: "https://www.achyutthapa.com.np/success",
+      cancel_url: "https://www.achyutthapa.com.np/cancel",
     });
     res.status(200).json(session);
   } catch (error) {
