@@ -36,7 +36,7 @@ router.get("/isverified", verificationauth, isverified);
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, process.env.UPLOAD_DIR ||"./public/my-uploads");
+    cb(null, process.env.UPLOAD_DIR || "./public/my-uploads");
   },
   filename: function (req, file, cb) {
     const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
@@ -54,7 +54,7 @@ router.put(
   updateProduct
 );
 router.get("/fetchproduct", authentication, fetchProduct);
-router.get("/fetchAllProduct", authentication, fetchAllProduct);
+router.get("/fetchAllProduct", fetchAllProduct);
 
 router.post("/checkout", authentication, checkout);
 
