@@ -20,7 +20,7 @@ app.use(
       "http://localhost:5173",
       "https://kinbech-client.vercel.app",
       "https://www.achyutthapa.com.np",
-      "https://kinbech-client-krxtkj7lj-achyutthapa7s-projects.vercel.app/"
+      "https://kinbech-client-krxtkj7lj-achyutthapa7s-projects.vercel.app"
     ],
     methods: "GET,POST,PUT,DELETE,OPTIONS",
     allowedHeaders: "Content-Type,Authorization",
